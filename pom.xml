@@ -1,0 +1,209 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cv.ejstavares</groupId>
+	<artifactId>igrp_horizon</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>igrp_horizon</name>
+	<properties>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.release>17</maven.compiler.release>
+		<!-- TomEE Embedded Maven Plugin -->
+		<tomee.maven.plugin.version>9.1.2</tomee.maven.plugin.version>
+		<tomee.jaxrs.version>9.1.2</tomee.jaxrs.version>
+
+		<igrp.db.user>postgres</igrp.db.user>
+		<igrp.db.password>postgres</igrp.db.password>
+		<igrp.db.dsn>jdbc:postgresql://localhost:5432/db_igrp_horizon2</igrp.db.dsn>
+		<igrp.db.driver>org.postgresql.Driver</igrp.db.driver>
+		<igrp.migration.location>classpath:nosi/core/db/migration/igrp/postgres</igrp.migration.location> <!-- Ex: classpath:nosi/core/db/migration/igrp/postgres  -->
+
+		<jersey.version>2.43</jersey.version>
+	</properties>
+	<dependencies>
+
+		<dependency>
+			<groupId>cv.igrp</groupId>
+			<artifactId>igrp-core-war</artifactId>
+			<version>[2.0.0,3.0.0)</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>cv.igrp</groupId>
+			<artifactId>igrp-core</artifactId>
+			<version>[2.0.0,3.0.0)</version>
+			<type>jar</type>
+		</dependency>
+
+    <!--OK https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-server -->
+
+  
+	  <!--OK https://mvnrepository.com/artifact/org.glassfish.jersey.inject/jersey-hk2 -->
+
+  
+	  <!--OK  https://mvnrepository.com/artifact/org.glassfish.jersey.containers/jersey-container-servlet -->
+
+  
+	  <!--OK https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-json-jackson -->
+
+  
+	  <!-- Jersey Dependencies
+
+	   <dependency>
+		<groupId>org.glassfish.jersey.core</groupId>
+		<artifactId>jersey-server</artifactId>
+		<version>${jersey.version}</version>
+	  </dependency>
+
+	  <dependency>
+		<groupId>org.glassfish.jersey.inject</groupId>
+		<artifactId>jersey-hk2</artifactId>
+		<version>${jersey.version}</version>
+	  </dependency>
+
+	   <dependency>
+		<groupId>org.glassfish.jersey.containers</groupId>
+		<artifactId>jersey-container-servlet</artifactId>
+		<version>${jersey.version}</version>
+	  </dependency>
+
+		  <dependency>
+		<groupId>org.glassfish.jersey.media</groupId>
+		<artifactId>jersey-media-json-jackson</artifactId>
+		<version>${jersey.version}</version>
+	  </dependency>
+	  <dependency>
+			  <groupId>org.glassfish.jersey.core</groupId>
+			  <artifactId>jersey-client</artifactId>
+			  <version>${jersey.version}</version>
+		  </dependency>
+	  <dependency>
+		<groupId>org.apache.tomee</groupId>
+		<artifactId>javaee-api</artifactId>
+		<version>8.0-6</version>
+	  </dependency>-->
+
+
+		<dependency>
+			<groupId>org.apache.tomee</groupId>
+			<artifactId>tomee-jaxrs</artifactId>
+			<version>${tomee.jaxrs.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<directory>${project.basedir}/target</directory>
+		<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+		<outputDirectory>${project.build.directory}/classes</outputDirectory>
+		<testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/src/test/resources</directory>
+			</testResource>
+		</testResources>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.3.1</version>
+					<configuration>
+						<propertiesEncoding>UTF-8</propertiesEncoding>
+					</configuration>
+				</plugin>
+				<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.11.0</version>
+					<configuration>
+		                <includes>
+		                	<include>**/*.java</include>
+		                </includes>
+		            </configuration>
+				</plugin>
+				<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-war-plugin -->
+				<plugin>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>3.4.0</version>
+				<!--If you want to override i18n languages of the framework or add more in you app folder
+					<configuration>
+						<webResources>
+							<resource>
+								<directory>
+									${project.basedir}/src/main/java/nosi/core/i18n</directory>
+								<targetPath>WEB-INF/classes/nosi/core/i18n</targetPath>
+							</resource>
+						</webResources>
+					</configuration>-->
+				</plugin>
+				<!-- Database migrations plugin -->
+				<plugin>
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-maven-plugin</artifactId>
+					<configuration>
+						<url>${igrp.db.dsn}</url>
+						<user>${igrp.db.user}</user>
+						<password>${igrp.db.password}</password>
+						<baselineOnMigrate>true</baselineOnMigrate>
+						<locations>
+							<location>${igrp.migration.location}</location>
+						</locations>
+					</configuration>
+				</plugin>
+				<!-- FIM Database migrations plugin -->
+				<!-- Embedded TomEE plugin -->
+				<plugin>
+					<groupId>org.apache.tomee.maven</groupId>
+					<artifactId>tomee-maven-plugin</artifactId>
+					<version>${tomee.maven.plugin.version}</version>
+					<configuration>
+						<tomeeClassifier>plus</tomeeClassifier>
+						<reloadOnUpdate>false</reloadOnUpdate>
+						<!-- To change de ports
+						<tomeeHttpPort>8081</tomeeHttpPort>
+						<tomeeShutdownPort>8006</tomeeShutdownPort>  -->
+						<args>-Dfile.encoding=UTF-8</args>
+						<synchronization>
+							<extensions>
+								<extension>.class</extension> <!-- if you want to update each time you build with mvn compile -->
+								<extension>.xml</extension>
+								 <extension>.xsl</extension>
+								<extension>.properties</extension>
+							</extensions>
+						</synchronization>
+						<systemVariables>
+							<tomee.serialization.class.whitelist />
+							<tomee.serialization.class.blacklist>-</tomee.serialization.class.blacklist>
+							<openejb.system.apps>true</openejb.system.apps>
+							<tomee.remote.support>true</tomee.remote.support>
+						</systemVariables>
+						<libs>
+							<lib>remove:myfaces</lib>	
+							<lib>remove:openjpa-</lib>
+						</libs>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<!-- Dependency repository -->
+	<repositories>
+		<repository>
+			<id>nexusdeploymentrepo</id>
+			<url>https://sonatype.nosi.cv/repository/maven-releases/</url>
+		</repository>
+	</repositories>
+
+</project>

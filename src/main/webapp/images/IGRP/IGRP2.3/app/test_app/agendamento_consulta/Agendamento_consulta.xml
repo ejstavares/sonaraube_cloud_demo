@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/IGRPAPP/images/IGRP/IGRP2.3/app/test_app/agendamento_consulta/Agendamento_consulta.xsl" type="text/xsl"?>
+<rows>
+    <link_img>/IGRPAPP/images/IGRP/IGRP2.3</link_img>
+    <title>Dummie XML prototype</title>
+    <site>
+        <welcome_note>Oba</welcome_note>
+        <footer_note>2019 - Copyright NOSI v.190711</footer_note>
+        <user_name>Hexagon</user_name>
+        <button type="specific">
+            <title>Sair</title>
+            <app>DUA</app>
+            <page />
+            <link>#</link>
+            <target>_self</target>
+            <img>exit.png</img>
+        </button>
+    </site>
+    <page>Agendamento_consulta</page>
+    <app>test_app</app>
+    <plsql>
+        <action>index</action>
+        <package_instance></package_instance>
+        <package_db>nosi.webapps.test_app.pages</package_db>
+        <package_html>Agendamento_consulta</package_html>
+        <table_name></table_name>
+        <with_replace>false</with_replace>
+        <with_label>false</with_label>
+        <with_biztalk>false</with_biztalk>
+        <dynamic_menu>false</dynamic_menu>
+        <copy_menu>false</copy_menu>
+        <package_copy_db />
+        <package_copy_html />
+        <preserve_url>webapps?r=igrp/page/preserveUrl&amp;p_id=123</preserve_url>
+    </plsql>
+    <slide-menu file="../images/IGRP/IGRP2.3/xml/IGRP-slide-menu.xml?v=2" />
+    <top_menu file="../images/IGRP/IGRP2.3/xml/IGRP-top_menu.xml?v=2" />
+    <content>
+        <title>Agendamento Consulta</title>
+        <form_1 type="form" xml-type="form" gen-type="container" gen-group="">
+            <fields>
+                <data_consulta name="p_data_consulta" type="date" range="false" disableWeekends="false" disabledBeforetoday="false" daysoff="false" maxlength="250" required="false" change="false" readonly="false" disabled="false" placeholder="" desclabel="false" right="false" tooltip="false" disable_copy_paste="false" class="primary">
+                    <label>Data Consulta</label>
+                    <value>05-05-2014</value>
+                </data_consulta>
+                <especialidade name="p_especialidade" type="select" multiple="true" tags="false" load_service_data="false" domain="" maxlength="250" required="false" change="false" disabled="false" right="false" java-type="" tooltip="false" disable_copy_paste="false">
+                    <label>Especialidade</label>
+                    <list>
+                        <option/>
+                        <option>
+                            <text>Option 1</text>
+                            <value>1</value>
+                        </option>
+                        <option>
+                            <text>Option 2</text>
+                            <value>2</value>
+                        </option>
+                        <option>
+                            <text>Option 3</text>
+                            <value>3</value>
+                        </option>
+                        <option>
+                            <text>Option 4</text>
+                            <value>4</value>
+                        </option>
+                    </list>
+                </especialidade>
+                <medico name="p_medico" type="select" multiple="false" tags="false" load_service_data="false" domain="" maxlength="250" required="false" change="true" disabled="false" right="false" java-type="" tooltip="false" disable_copy_paste="false">
+                    <label>Medico</label>
+                    <list>
+                        <option/>
+                        <option>
+                            <text>Option 1</text>
+                            <value>1</value>
+                        </option>
+                        <option>
+                            <text>Option 2</text>
+                            <value>2</value>
+                        </option>
+                        <option>
+                            <text>Option 3</text>
+                            <value>3</value>
+                        </option>
+                        <option>
+                            <text>Option 4</text>
+                            <value>4</value>
+                        </option>
+                    </list>
+                </medico>
+            </fields>
+        </form_1>
+        <table_1 type="table" xml-type="table" gen-type="container" gen-group="true">
+            <fields>
+                <especialidade_tbl name="p_especialidade_tbl" type="plaintext" disable_output_escaping="false" html_class="" maxlength="30" showLabel="true" align="left" lookup_parser="false" iskey="false" group_in="">
+                    <label>Especialidade</label>
+                </especialidade_tbl>
+                <medico_tbl name="p_medico_tbl" type="plaintext" disable_output_escaping="false" html_class="" maxlength="30" showLabel="true" align="left" lookup_parser="false" iskey="false" group_in="">
+                    <label>Medico</label>
+                </medico_tbl>
+                <hora_inicio name="p_hora_inicio" type="plaintext" disable_output_escaping="false" html_class="" maxlength="30" showLabel="true" align="left" lookup_parser="false" iskey="false" group_in="">
+                    <label>Hora Inicio</label>
+                </hora_inicio>
+                <hora_fim name="p_hora_fim" type="plaintext" disable_output_escaping="false" html_class="" maxlength="30" showLabel="true" align="left" lookup_parser="false" iskey="false" group_in="">
+                    <label>Hora Fim</label>
+                </hora_fim>
+                <selecionar name="p_selecionar" type="checkbox" maxlength="30" showLabel="true" align="left" lookup_parser="false" iskey="false" group_in="" java-type="int" switch="false" check="true" desc="true">
+                    <label>Selecionar</label>
+                </selecionar>
+            </fields>
+            <table>
+                <value>
+                    <row>
+                        <especialidade_tbl name="p_especialidade_tbl">Sit dolor consectetur officia</especialidade_tbl>
+                        <medico_tbl name="p_medico_tbl">Anim accusantium anim accusant</medico_tbl>
+                        <hora_inicio name="p_hora_inicio">Totam magna dolor unde amet si</hora_inicio>
+                        <hora_fim name="p_hora_fim">Aperiam sit voluptatem amet la</hora_fim>
+                        <selecionar name="p_selecionar" check="true" desc="true">1</selecionar>
+                        <selecionar_check name="p_selecionar_check">1</selecionar_check>
+                    </row>
+                    <row>
+                        <especialidade_tbl name="p_especialidade_tbl">Ut perspiciatis laudantium dol</especialidade_tbl>
+                        <medico_tbl name="p_medico_tbl">Elit rem voluptatem sed natus</medico_tbl>
+                        <hora_inicio name="p_hora_inicio">Rem voluptatem elit stract ape</hora_inicio>
+                        <hora_fim name="p_hora_fim">Elit perspiciatis consectetur</hora_fim>
+                        <selecionar name="p_selecionar" check="true" desc="true">1</selecionar>
+                        <selecionar_check name="p_selecionar_check">1</selecionar_check>
+                    </row>
+                    <row>
+                        <especialidade_tbl name="p_especialidade_tbl">Officia amet labore totam ut a</especialidade_tbl>
+                        <medico_tbl name="p_medico_tbl">Sed ipsum accusantium lorem el</medico_tbl>
+                        <hora_inicio name="p_hora_inicio">Ipsum natus natus lorem aperia</hora_inicio>
+                        <hora_fim name="p_hora_fim">Ipsum omnis sed mollit rem omn</hora_fim>
+                        <selecionar name="p_selecionar" check="true" desc="true">1</selecionar>
+                        <selecionar_check name="p_selecionar_check">1</selecionar_check>
+                    </row>
+                    <row>
+                        <especialidade_tbl name="p_especialidade_tbl">Aperiam anim sit aliqua elit l</especialidade_tbl>
+                        <medico_tbl name="p_medico_tbl">Consectetur stract anim natus</medico_tbl>
+                        <hora_inicio name="p_hora_inicio">Aliqua elit labore mollit pers</hora_inicio>
+                        <hora_fim name="p_hora_fim">Iste magna anim ipsum aperiam</hora_fim>
+                        <selecionar name="p_selecionar" check="true" desc="true">1</selecionar>
+                        <selecionar_check name="p_selecionar_check">1</selecionar_check>
+                    </row>
+                    <row>
+                        <especialidade_tbl name="p_especialidade_tbl">Rem laudantium voluptatem amet</especialidade_tbl>
+                        <medico_tbl name="p_medico_tbl">Aliqua elit deserunt totam mag</medico_tbl>
+                        <hora_inicio name="p_hora_inicio">Iste mollit totam unde officia</hora_inicio>
+                        <hora_fim name="p_hora_fim">Laudantium sit deserunt consec</hora_fim>
+                        <selecionar name="p_selecionar" check="true" desc="true">1</selecionar>
+                        <selecionar_check name="p_selecionar_check">1</selecionar_check>
+                    </row>
+                </value>
+            </table>
+        </table_1>
+    </content>
+    <blockly>
+        <imports></imports>
+        <xml>
+            <block type="controller" id="controller" x="388" y="13"></block>
+        </xml>
+    </blockly>
+</rows>
