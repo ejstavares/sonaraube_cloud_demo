@@ -38,10 +38,11 @@
         <servlet-name>IGRP</servlet-name>
         <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
+    <!-- Caso pretende CONFIGURAR REST API, comentar este servlet-mapping -->
+    <!--<servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/images/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
@@ -63,35 +64,4 @@
         <filter-name>AuthenticationFilter</filter-name>
         <servlet-name>IGRP</servlet-name>
     </filter-mapping>
-
-    <!-- CONFIGURE REST API
-    <servlet>
-        <servlet-name>Rest</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
-            <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>nosi.webapps.test_app.service.restapi</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Rest</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>-->
-
-    <!-- Jersey Servlet configurations
-    <servlet>
-        <servlet-name>Jersey REST Service</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
-            <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>nosi.webapps.test_app.service.restapi</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Jersey REST Service</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>-->
-    <!-- Jersey Servlet configurations -->
 </web-app>
