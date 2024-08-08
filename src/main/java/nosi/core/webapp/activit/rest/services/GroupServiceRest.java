@@ -7,6 +7,7 @@ import java.util.List;
 
 import jakarta.ws.rs.core.Response;
 
+import nosi.core.webapp.helpers.IgrpHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,20 +25,20 @@ public class GroupServiceRest extends GenericActivitiRest{
 
 	public GroupService getGroup(String id) {
 		GroupService g = new GroupService();
-		var response = this.getRestRequest().get("identity/groups", id, String.class);
+		Response response = this.getRestRequest().get("identity/groups", id);
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 200) {*/
-				g = (GroupService) ResponseConverter.convertJsonToDao(response, GroupService.class);
-			/*} else {
+			if (response.getStatus() == 200) {
+				g = (GroupService) ResponseConverter.convertJsonToDao(contentResp, GroupService.class);
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		return g;
 	}
@@ -45,72 +46,63 @@ public class GroupServiceRest extends GenericActivitiRest{
 	@SuppressWarnings("unchecked")
 	public List<GroupService> getGroups() {
 		List<GroupService> d = new ArrayList<>();
-		try{
-			var response = this.getRestRequest().get("identity/groups", String.class);
-			if (response != null) {
-				/*String contentResp = "";
-				try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (response.getStatus() == 200) {*/
-					d = (List<GroupService>) ResponseConverter.convertJsonToListDao(response, "data",
-							new TypeToken<List<GroupService>>() {
-							}.getType());
-				/*} else {
-					this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
-				}
-				response.close();*/
+		Response response = this.getRestRequest().get("identity/groups");
+		if (response != null) {
+			String contentResp = "";
+			try {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			var error = new ResponseError();
-			error.setMessage(e.getMessage());
-			error.setException(e.toString());
-			error.setStatusCode(500);
-
-			this.setError(error);
+			if (response.getStatus() == 200) {
+				d = (List<GroupService>) ResponseConverter.convertJsonToListDao(contentResp, "data",
+						new TypeToken<List<GroupService>>() {
+						}.getType());
+			} else {
+				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
+			}
+			response.close();
 		}
 		return d;
 	}
 
 	public GroupService create(GroupService group) {
 		GroupService g = new GroupService();
-		var response = this.getRestRequest().post("identity/groups", ResponseConverter.convertDaoToJson(group), String.class);
+		Response response = this.getRestRequest().post("identity/groups", ResponseConverter.convertDaoToJson(group));
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 201) {*/
-				g = (GroupService) ResponseConverter.convertJsonToDao(response, GroupService.class);
-			/*} else {
+			if (response.getStatus() == 201) {
+				g = (GroupService) ResponseConverter.convertJsonToDao(contentResp, GroupService.class);
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		return g;
 	}
 
 	public GroupService update(GroupService group) {
 		GroupService g = new GroupService();
-		var response = this.getRestRequest().put("identity/groups", ResponseConverter.convertDaoToJson(group),
-				group.getId(), String.class);
+		Response response = this.getRestRequest().put("identity/groups", ResponseConverter.convertDaoToJson(group),
+				group.getId());
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 200) {*/
-				g = (GroupService) ResponseConverter.convertJsonToDao(response, GroupService.class);
-			/*} else {
+			if (response.getStatus() == 200) {
+				g = (GroupService) ResponseConverter.convertJsonToDao(contentResp, GroupService.class);
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		return g;
 	}

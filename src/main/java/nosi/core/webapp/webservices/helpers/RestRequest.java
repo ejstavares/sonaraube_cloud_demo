@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import jakarta.ws.rs.core.GenericType;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
@@ -150,7 +149,12 @@ public class RestRequest{
 
 	
 	public Response post(String url, String content) {
-		return this.post( url,  content, Response.class) ;
+		try {
+			return this.post( url,  content, Response.class) ;
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public <T> T post(String url, String content, Class<T> responseType) {
@@ -165,6 +169,17 @@ public class RestRequest{
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+	public <T> T post2(String url, String content, Class<T> responseType) throws Exception {
+
+		Client client = this.getConfig().bluidClient();
+		this.addUrl(url);
+		WebTarget target = client.target(this.getConfig().getUrl());
+		T response = target.request(this.getAccept_format()).cacheControl(cacheControl).post(Entity.json(content), responseType);
+		client.close();
+		return response;
 	}
 
 

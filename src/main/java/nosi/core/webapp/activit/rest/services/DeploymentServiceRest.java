@@ -9,7 +9,8 @@ import jakarta.ws.rs.core.Response;
 import com.google.gson.reflect.TypeToken;
 
 import nosi.core.webapp.activit.rest.entities.DeploymentService;
-import nosi.core.webapp.helpers.FileHelper;
+
+import nosi.core.webapp.helpers.IgrpHelper;
 import nosi.core.webapp.webservices.helpers.ResponseConverter;
 import nosi.core.webapp.webservices.helpers.ResponseError;
 
@@ -20,20 +21,21 @@ public class DeploymentServiceRest extends GenericActivitiRest {
 
 	public DeploymentService getDeployment(String id) {
 		DeploymentService d = new DeploymentService();
-		String response = this.getRestRequest().get("repository/deployments/", id, String.class);
+		Response response = this.getRestRequest().get("repository/deployments/", id);
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream)response.getEntity());
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 200) {*/
-				d = (DeploymentService) ResponseConverter.convertJsonToDao(response, DeploymentService.class);
-			/*} else {
+			if (response.getStatus() == 200) {
+				d = (DeploymentService) ResponseConverter.convertJsonToDao(contentResp, DeploymentService.class);
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		return d;
 	}
@@ -41,33 +43,25 @@ public class DeploymentServiceRest extends GenericActivitiRest {
 	@SuppressWarnings("unchecked")
 	public DeploymentService getDeploymentByName(String name) {
 		DeploymentService d = new DeploymentService();
-		try {
-			String response = this.getRestRequest().get("repository/deployments?name=" + name, String.class);
-			if (response != null) {
-				/*String contentResp = "";
-				try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (response.getStatus() == 200) {*/
-					List<DeploymentService> list = (List<DeploymentService>) ResponseConverter
-							.convertJsonToListDao(response, "data", new TypeToken<List<DeploymentService>>() {
-							}.getType());
-					if (list != null && !list.isEmpty())
-						d = list.get(0);
-				/*} else {
-					this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
-				}
-				response.close();*/
+		Response response = this.getRestRequest().get("repository/deployments?name=" + name);
+		if (response != null) {
+			String contentResp = "";
+			try {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			var error = new ResponseError();
-			error.setMessage(e.getMessage());
-			error.setException(e.toString());
-			error.setStatusCode(500);
-
-			this.setError(error);
+			if (response.getStatus() == 200) {
+				List<DeploymentService> list = (List<DeploymentService>) ResponseConverter
+						.convertJsonToListDao(contentResp, "data", new TypeToken<List<DeploymentService>>() {
+						}.getType());
+				if (list != null && !list.isEmpty())
+					d = list.get(0);
+			} else {
+				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
+			}
+			response.close();
 		}
 		return d;
 	}
@@ -75,51 +69,44 @@ public class DeploymentServiceRest extends GenericActivitiRest {
 	@SuppressWarnings("unchecked")
 	public List<DeploymentService> getDeployments(String idApp) {
 		List<DeploymentService> d = new ArrayList<>();
-		try {
-			String response = this.getRestRequest().get("repository/deployments?&size=100000000&tenantId=" + idApp, String.class);
-			if (response != null) {
-				/*String contentResp = "";
-				try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (response.getStatus() == 200) {*/
-					d = (List<DeploymentService>) ResponseConverter.convertJsonToListDao(response, "data",
-							new TypeToken<List<DeploymentService>>() {
-							}.getType());
-				/*} else {
-					this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
-				}
-				response.close();*/
+		Response response = this.getRestRequest().get("repository/deployments?&size=100000000&tenantId=" + idApp);
+		if (response != null) {
+			String contentResp = "";
+			try {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			var error = new ResponseError();
-			error.setMessage(e.getMessage());
-			error.setException(e.toString());
-			error.setStatusCode(500);
-
-			this.setError(error);
+			if (response.getStatus() == 200) {
+				d = (List<DeploymentService>) ResponseConverter.convertJsonToListDao(contentResp, "data",
+						new TypeToken<List<DeploymentService>>() {
+						}.getType());
+			} else {
+				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
+			}
+			response.close();
 		}
 		return d;
 	}
 
 	public DeploymentService create(Part file, String idApp) throws IOException {
 		DeploymentService d = new DeploymentService();
-		String response = this.getRestRequest().post("repository/deployments?tenantId=" + idApp, file, ".bpmn20.xml", String.class);
+		Response response = this.getRestRequest().post("repository/deployments?tenantId=" + idApp, file, ".bpmn20.xml");
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 201) {*/
-				d = (DeploymentService) ResponseConverter.convertJsonToDao(response, DeploymentService.class);
-			/*} else {
+			if (response.getStatus() == 201) {
+				d = (DeploymentService) ResponseConverter.convertJsonToDao(contentResp, DeploymentService.class);
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		file.delete();
 		return d;
@@ -128,40 +115,40 @@ public class DeploymentServiceRest extends GenericActivitiRest {
 	public DeploymentService create(InputStream file, String idApp, String fileName, String contentType)
 			throws IOException {
 		DeploymentService d = new DeploymentService();
-		String response = this.getRestRequest().post("repository/deployments?tenantId=" + idApp, file, fileName, contentType, String.class);
+		Response response = this.getRestRequest().post("repository/deployments?tenantId=" + idApp, file, fileName, contentType);
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 201) {*/
-				d = (DeploymentService) ResponseConverter.convertJsonToDao(response, DeploymentService.class);
-			/*} else {
+			if (response.getStatus() == 201) {
+				d = (DeploymentService) ResponseConverter.convertJsonToDao(contentResp, DeploymentService.class);
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		return d;
 	}
 
 	public DeploymentService update(Part file, String idApp) throws IOException {
 		DeploymentService d = new DeploymentService();
-		String response = this.getRestRequest().post("repository/deployments?tenantId=" + idApp, file, ".bpmn20.xml", String.class);
+		Response response = this.getRestRequest().post("repository/deployments?tenantId=" + idApp, file, ".bpmn20.xml");
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 200) {*/
-				d = (DeploymentService) ResponseConverter.convertJsonToDao(response, DeploymentService.class);
-			/*} else {
+			if (response.getStatus() == 200) {
+				d = (DeploymentService) ResponseConverter.convertJsonToDao(contentResp, DeploymentService.class);
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		file.delete();
 		return d;

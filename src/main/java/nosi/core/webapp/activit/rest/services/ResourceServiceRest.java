@@ -12,6 +12,7 @@ import nosi.core.webapp.activit.rest.entities.ResourceService;
 import nosi.core.webapp.activit.rest.entities.ResourcesService;
 import nosi.core.webapp.activit.rest.request.RestRequest;
 import nosi.core.webapp.helpers.FileHelper;
+import nosi.core.webapp.helpers.IgrpHelper;
 import nosi.core.webapp.webservices.helpers.ResponseConverter;
 import nosi.core.webapp.webservices.helpers.ResponseError;
 
@@ -23,21 +24,21 @@ public class ResourceServiceRest extends GenericActivitiRest{
 
 	public ResourceService getResource(String id_deployment, String id_resource) {
 		ResourceService r = new ResourceService();
-		String response = this.getRestRequest().get("repository/deployments/" + id_deployment + "/resources",
-				id_resource, String.class);
+		Response response = this.getRestRequest().get("repository/deployments/" + id_deployment + "/resources",
+				id_resource);
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 200) {*/
-				r = (ResourceService) ResponseConverter.convertJsonToDao(response, ResourceService.class);
-			/*} else {
+			if (response.getStatus() == 200) {
+				r = (ResourceService) ResponseConverter.convertJsonToDao(contentResp, ResourceService.class);
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		return r;
 	}
@@ -45,107 +46,83 @@ public class ResourceServiceRest extends GenericActivitiRest{
 	public String getResourceData(String id_deployment, String id_resource) {
 		RestRequest request = this.getRestRequest();
 		request.setAccept_format(MediaType.APPLICATION_XML);
-		return request.get("repository/deployments/" + id_deployment + "/resourcedata/", id_resource, String.class);
-		/*String contentResp = "";
+		Response response = request.get("repository/deployments/" + id_deployment + "/resourcedata/", id_resource);
+		String contentResp = "";
 		if (response != null) {
 			if (response.getStatus() == 200) {
 				try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-				} catch (IOException e) {
+					//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+					contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 			response.close();
-
-		return contentResp;}*/
+		}
+		return contentResp;
 	}
 
 	public String getResourceData(String link) {
+		RestRequest request = this.getRestRequest();
+//		String url = Credentials.getInstance().getUrl();
+//		String link_ = url.contains("https") ? link.replace("http", "https") : link;
+		request.setBase_url("");
 		String contentResp = "";
-		try{
-			RestRequest request = this.getRestRequest();
-
-			request.setBase_url("");
-
-			contentResp = request.get(link, String.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		/*
-
+		Response response = request.get(link);
 		if (response != null) {
 			if (response.getStatus() == 200) {
 				try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+					//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+					contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 			response.close();
-		}*/
+		}
 		return contentResp;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<ResourceService> getResources(String id_deployment) {
 		List<ResourceService> d = new ArrayList<>();
-		try{
-			String response = this.getRestRequest().get("repository/deployments/" + id_deployment + "/resources", String.class);
-			if (response != null) {
-				/*String contentResp = "";
-				try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (response.getStatus() == 200) {*/
-					d = (List<ResourceService>) ResponseConverter.convertJsonToListDao(response,
-							new TypeToken<List<ResourceService>>() {
-							}.getType());
-				/*} else {
-					this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
-				}
-				response.close();*/
+		Response response = this.getRestRequest().get("repository/deployments/" + id_deployment + "/resources");
+		if (response != null) {
+			String contentResp = "";
+			try {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			var error = new ResponseError();
-			error.setMessage(e.getMessage());
-			error.setException(e.toString());
-			error.setStatusCode(500);
-
-			this.setError(error);
+			if (response.getStatus() == 200) {
+				d = (List<ResourceService>) ResponseConverter.convertJsonToListDao(contentResp,
+						new TypeToken<List<ResourceService>>() {
+						}.getType());
+			} else {
+				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
+			}
+			response.close();
 		}
 		return d;
 	}
 
 	public ResourcesService getResource(String url) {
+		RestRequest req = this.getRestRequest();
+		req.setBase_url("");
+		Response response = req.get(url);
 		ResourcesService resource = new ResourcesService();
-		try{
-			RestRequest req = this.getRestRequest();
-			req.setBase_url("");
-			var response = req.get(url, String.class);//TODO validate the conversion to ResourcesService.class directly and see the result of the received data
-
-			if (response != null) {
-				/*String contentResp = "";
-				try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (response.getStatus() == 200) {*/
-					resource = (ResourcesService) ResponseConverter.convertJsonToDao(response, ResourcesService.class);
-				/*} else {
-					this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
-				}
-				response.close();*/
+		if (response != null) {
+			String contentResp = "";
+			try {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			var error = new ResponseError();
-			error.setMessage(e.getMessage());
-			error.setException(e.toString());
-			error.setStatusCode(500);
-
-			this.setError(error);
+			if (response.getStatus() == 200) {
+				resource = (ResourcesService) ResponseConverter.convertJsonToDao(contentResp, ResourcesService.class);
+			} else {
+				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
+			}
+			response.close();
 		}
 		return resource;
 	}

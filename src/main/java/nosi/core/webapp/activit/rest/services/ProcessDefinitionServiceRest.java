@@ -5,12 +5,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import jakarta.ws.rs.core.GenericEntity;
-import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import nosi.core.webapp.helpers.InputstremCoreHelper;
+import nosi.core.webapp.helpers.IgrpHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.gson.reflect.TypeToken;
@@ -22,6 +19,7 @@ import nosi.core.webapp.activit.rest.request.RestRequest;
 import nosi.core.webapp.helpers.FileHelper;
 import nosi.core.webapp.webservices.helpers.ResponseConverter;
 import nosi.core.webapp.webservices.helpers.ResponseError;
+
 /**
  * Emanuel 14 May 2019
  */
@@ -57,58 +55,43 @@ public class ProcessDefinitionServiceRest extends GenericActivitiRest {
 		if (Core.isNotNull(link)) {
 			RestRequest request = this.getRestRequest();
 			request.setBase_url("");
-			try {
-
-
-			String response = request.get(link, String.class);
+			Response response = request.get(link);
 			if (response != null) {
 				String contentResp = "";
-				contentResp = response;
-				/*try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-				} catch (IOException e) {
+				try {
+					//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+					contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());				} catch (IOException e) {
 					e.printStackTrace();
-				}*/
-				//if (response.getStatus() == 200) {
+				}
+				if (response.getStatus() == 200) {
 					process = (ProcessDefinitionService) ResponseConverter.convertJsonToDao(contentResp,
 							ProcessDefinitionService.class);
-				/*} else {
+				} else {
 					this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 				}
-				response.close();*/
-			}
-			} catch (Exception e) {
-				var error = new ResponseError();
-				error.setMessage(e.getMessage());
-				error.setException(e.toString());
-				error.setStatusCode(500);
-
-				this.setError(error);
+				response.close();
 			}
 		}
 		return process;
 	}
 
 	public ProcessDefinitionService getProcessDefinition(String id) {
-		var response = this.getRestRequest().get("repository/process-definitions/", id, String.class);
+		Response response = this.getRestRequest().get("repository/process-definitions/", id);
 		ProcessDefinitionService process = new ProcessDefinitionService();
 		if (response != null) {
 			String contentResp = "";
-			/*try {
+			try {
 				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
-			}*/
-
-			contentResp =  response;
-
-			//if (response.getStatus() == 200) {
+			}
+			if (response.getStatus() == 200) {
 				process = (ProcessDefinitionService) ResponseConverter.convertJsonToDao(contentResp,
 						ProcessDefinitionService.class);
-			/*} else {
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}		
 		return process;
 	}
@@ -125,58 +108,28 @@ public class ProcessDefinitionServiceRest extends GenericActivitiRest {
 	@SuppressWarnings("unchecked")
 	public List<ProcessDefinitionService> getProcessDefinitions() {
 		List<ProcessDefinitionService> d = new ArrayList<>();
-		try{
-			String response = this.getRestRequest()
-					.get("repository/process-definitions?size=" + ActivitiConstants.SIZE_QUERY + this.getFilterUrl(), String.class);
-			if (response != null) {
-				String contentResp = "";
-				contentResp = response;
-				/*try {
-					contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}*/
-				//if (Response.Status.OK.getStatusCode() == response.getStatus()) {
-					d = (List<ProcessDefinitionService>) ResponseConverter.convertJsonToListDao(contentResp, "data",
-							new TypeToken<List<ProcessDefinitionService>>() {
-							}.getType());
-				//} else {
-				//	this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
-				//}
-				//response.close();
-			}
-		} catch (Exception e) {
-			var error = new ResponseError();
-			error.setMessage(e.getMessage());
-			error.setException(e.toString());
-			error.setStatusCode(500);
-
-			this.setError(error);
-		}
-		return d;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<ProcessDefinitionService> getProcessDefinitionsOLD() {
-
-		List<ProcessDefinitionService> d = new ArrayList<>();
-		var response = this.getRestRequest()
+		Response response = this.getRestRequest()
 				.get("repository/process-definitions?size=" + ActivitiConstants.SIZE_QUERY + this.getFilterUrl());
-
 		if (response != null) {
 			String contentResp = "";
+			var is = (InputStream) response.getEntity();
 
-			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			if (Response.Status.OK.getStatusCode() == response.getStatus()) {
+				try {
+					//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+					contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 				d = (List<ProcessDefinitionService>) ResponseConverter.convertJsonToListDao(contentResp, "data",
-					new TypeToken<List<ProcessDefinitionService>>() {
-					}.getType());
+						new TypeToken<List<ProcessDefinitionService>>() {
+						}.getType());
 			} else {
-				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
+                var error = new  ResponseError();
+				error.setStatusCode(response.getStatus());
+				error.setMessage("Error on get process definition data.");
+				error.setException("Error on get process definition data."+response.getStatus());
+                this.setError(error);
 			}
 			response.close();
 		}
@@ -209,18 +162,17 @@ public class ProcessDefinitionServiceRest extends GenericActivitiRest {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		String response = this.getRestRequest().put("repository/process-definitions", jobj.toString(), id, String.class);
+		Response response = this.getRestRequest().put("repository/process-definitions", jobj.toString(), id);
 		if (response != null) {
 			String contentResp = "";
-			contentResp = response;
-			/*try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+			try {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
-			}*/
+			}
 			this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
-			/*r = response.getStatus() == 200;
-			response.close();*/
+			r = response.getStatus() == 200;
+			response.close();
 			
 		}
 		return r;
@@ -228,44 +180,43 @@ public class ProcessDefinitionServiceRest extends GenericActivitiRest {
 
 	public ProcessDefinitionService create(ProcessDefinitionService p) {
 		ProcessDefinitionService d = new ProcessDefinitionService();
-		String response = this.getRestRequest().post("repository/process-definitions", ResponseConverter.convertDaoToJson(p),String.class);
+		Response response = this.getRestRequest().post("repository/process-definitions", ResponseConverter.convertDaoToJson(p));
 		if (response != null) {
-			/*String contentResp = "";
-
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 201) {*/
-				d = (ProcessDefinitionService) ResponseConverter.convertJsonToDao(response,
+			if (response.getStatus() == 201) {
+				d = (ProcessDefinitionService) ResponseConverter.convertJsonToDao(contentResp,
 						ProcessDefinitionService.class);
-			/*} else {
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		return d;
 	}
 
 	public ProcessDefinitionService update(ProcessDefinitionService p) {
 		ProcessDefinitionService d = new ProcessDefinitionService();
-		String response = this.getRestRequest().put("repository/process-definitions", ResponseConverter.convertDaoToJson(p),
-				p.getId(), String.class);
+		Response response = this.getRestRequest().put("repository/process-definitions", ResponseConverter.convertDaoToJson(p),
+				p.getId());
 		if (response != null) {
-			/*String contentResp = "";
+			String contentResp = "";
 			try {
-				contentResp = FileHelper.convertToString((InputStream) response.getEntity());
-			} catch (IOException e) {
+				//contentResp = FileHelper.convertToString((InputStream) response.getEntity());
+				contentResp = IgrpHelper.convertToJsonString((InputStream) response.getEntity());			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (response.getStatus() == 200) {*/
-				d = (ProcessDefinitionService) ResponseConverter.convertJsonToDao(response,
+			if (response.getStatus() == 200) {
+				d = (ProcessDefinitionService) ResponseConverter.convertJsonToDao(contentResp,
 						ProcessDefinitionService.class);
-			/*} else {
+			} else {
 				this.setError((ResponseError) ResponseConverter.convertJsonToDao(contentResp, ResponseError.class));
 			}
-			response.close();*/
+			response.close();
 		}
 		return d;
 	}
@@ -292,7 +243,7 @@ public class ProcessDefinitionServiceRest extends GenericActivitiRest {
 		return d;
 	}
 	public boolean delete(String deploymentId) { 
-		Response response = this.getRestRequest().delete("repository/deployments", deploymentId);
+		Response response = this.getRestRequest().delete("repository/deployments", deploymentId); 
 		boolean r= response != null && response.getStatus() == 204;
 		if(response != null) 
 			response.close();
